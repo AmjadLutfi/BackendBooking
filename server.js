@@ -21,6 +21,8 @@ const BookingSchema = new mongoose.Schema({
   name: String,
   email: String,
   date: String,
+  division: String,
+  department: String,
   session: String,
   barcode: String,
 }, { timestamps: true });
@@ -44,7 +46,7 @@ app.get('/api/slots', async (req, res) => {
 
 // **3. Endpoint untuk Booking**
 app.post('/api/book', async (req, res) => {
-    const { employeeId, name, email, date, session } = req.body;
+    const { employeeId, name, email, division, department, date, session } = req.body;
   
     // Cek kapasitas sesi
     const count = await Booking.countDocuments({ date, session });
@@ -61,7 +63,7 @@ app.post('/api/book', async (req, res) => {
     const qrCodeData = await QRCode.toDataURL(employeeId);
   
     // Simpan booking
-    const booking = new Booking({ employeeId, name, email, date, session, barcode: employeeId });
+    const booking = new Booking({ employeeId, name, email, division, department, date, session, barcode: employeeId });
     await booking.save();
   
     // Kirim Email
