@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
 const BookingSchema = new mongoose.Schema({
   employeeId: String,
   name: String,
-  email: String,
+  // email: String,
   date: String,
   division: String,
   department: String,
@@ -46,7 +46,7 @@ app.get('/api/slots', async (req, res) => {
 
 // **3. Endpoint untuk Booking**
 app.post('/api/book', async (req, res) => {
-    const { employeeId, name, email, division, department, date, session } = req.body;
+    const { employeeId, name, division, department, date, session } = req.body;
   
     // Cek kapasitas sesi
     const count = await Booking.countDocuments({ date, session });
@@ -63,28 +63,28 @@ app.post('/api/book', async (req, res) => {
     const qrCodeData = await QRCode.toDataURL(employeeId);
   
     // Simpan booking
-    const booking = new Booking({ employeeId, name, email, division, department, date, session, barcode: employeeId });
+    const booking = new Booking({ employeeId, name, division, department, date, session, barcode: employeeId });
     await booking.save();
   
     // Kirim Email
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      host: "smtp.gmail.com",
-      secure: false,
-      port: 587,
-      auth: { 
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS 
-        },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   host: "smtp.gmail.com",
+    //   secure: false,
+    //   port: 587,
+    //   auth: { 
+    //     user: process.env.EMAIL_USER, 
+    //     pass: process.env.EMAIL_PASS 
+    //     },
+    // });
   
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Konfirmasi Booking TMMIN Quality Exhibition 2025',
-      html: `<p>Halo ${name},</p><p>Booking Anda untuk sesi ${session} pada tanggal ${date} berhasil.</p><p>Berikut QR Code Anda Terlampir, Bawalah QRCode ini pada saat exhibition dan tunjukkan kepada panitia!</p>`,
-      attachments: [{ filename: 'QRCode_Booking.png', content: barcodeBuffer }],
-    });
+    // await transporter.sendMail({
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: 'Konfirmasi Booking TMMIN Quality Exhibition 2025',
+    //   html: `<p>Halo ${name},</p><p>Booking Anda untuk sesi ${session} pada tanggal ${date} berhasil.</p><p>Berikut QR Code Anda Terlampir, Bawalah QRCode ini pada saat exhibition dan tunjukkan kepada panitia!</p>`,
+    //   attachments: [{ filename: 'QRCode_Booking.png', content: barcodeBuffer }],
+    // });
   
     res.json({ message: 'Booking berhasil' });
   });
