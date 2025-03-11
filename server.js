@@ -81,9 +81,9 @@ app.post('/api/book', async (req, res) => {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Konfirmasi Booking',
-      html: `<p>Halo ${name},</p><p>Booking Anda untuk sesi ${session} pada ${date} berhasil.</p><p>QRCode Anda:</p>`,
-      attachments: [{ filename: 'barcode.png', content: barcodeBuffer }],
+      subject: 'Konfirmasi Booking TMMIN Quality Exhibition 2025',
+      html: `<p>Halo ${name},</p><p>Booking Anda untuk sesi ${session} pada tanggal ${date} berhasil.</p><p>Berikut QR Code Anda Terlampir, Bawalah QRCode ini pada saat exhibition dan tunjukkan kepada panitia!</p>`,
+      attachments: [{ filename: 'QRCode_Booking.png', content: barcodeBuffer }],
     });
   
     res.json({ message: 'Booking berhasil' });
