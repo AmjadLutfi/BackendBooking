@@ -29,22 +29,27 @@ const BookingSchema = new mongoose.Schema({
 
 const Booking = mongoose.model('Booking', BookingSchema);
 
-// **2. Endpoint untuk Cek Slot**
+
 app.get('/api/slots', async (req, res) => {
-    const { date } = req.query;
+    const { date, department } = req.query;
     const sessions = ['08:30 - 10:00', '10:00 - 11:30', '13:00 - 14:30', '14:30 - 16:00'];
   
     let result = {};
     for (let session of sessions) {
       const count = await Booking.countDocuments({ date, session });
-      result[session] = 25 - count;
+      const deptCount = await Booking.countDocuments({ date, session, department });
+      // result[session] = 25 - count;
+      result[session] = {
+        available: count < 25 && deptCount < 3, // Maksimum 3 slot per departemen
+        remaining: 25 - count,
+        deptRemaining: 3 - deptCount
+      };
     }
     
     res.json(result);
 });
   
 
-// **3. Endpoint untuk Booking**
 app.post('/api/book', async (req, res) => {
     const { employeeId, name, division, department, date, session } = req.body;
   
