@@ -30,6 +30,18 @@ const BookingSchema = new mongoose.Schema({
 const Booking = mongoose.model('Booking', BookingSchema);
 
 
+app.get('/api/check-booking', async (req, res) => {
+  const { employeeId } = req.query;
+
+  const existingBooking = await Booking.findOne({ employeeId });
+
+  if (existingBooking) {
+      return res.status(400).json({ message: 'Anda sudah pernah melakukan booking!' });
+  }
+
+  res.json({ message: 'Noreg belum pernah booking' });
+});
+
 app.get('/api/slots', async (req, res) => {
     const { date, department } = req.query;
     const sessions = ['08:30 - 10:00', '10:00 - 11:30', '13:00 - 14:30', '14:30 - 16:00'];
