@@ -42,6 +42,18 @@ app.get('/api/check-booking', async (req, res) => {
   res.json(existingBooking);
 });
 
+app.get('/api/check-status', async (req, res) => {
+  const { employeeId } = req.query;
+
+  const dataBooking = await Booking.findOne({ employeeId });
+
+  if (!dataBooking) {
+      return res.status(400).json({ message: 'Data booking tidak ditemukan' });
+  }
+
+  res.json(dataBooking);
+});
+
 app.get('/api/slots', async (req, res) => {
     const { date, department } = req.query;
     const sessions = ['08:30 - 10:00', '10:00 - 11:30', '13:00 - 14:30', '14:30 - 16:00'];
