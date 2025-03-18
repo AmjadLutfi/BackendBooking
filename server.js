@@ -39,7 +39,7 @@ app.get('/api/check-booking', async (req, res) => {
       return res.status(400).json({ message: 'Anda sudah pernah melakukan booking!' });
   }
 
-  res.json({ message: 'Noreg belum pernah booking' });
+  res.json(existingBooking);
 });
 
 app.get('/api/slots', async (req, res) => {
