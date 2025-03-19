@@ -31,10 +31,10 @@ const Booking = mongoose.model('Booking', BookingSchema);
 
 
 app.put('/api/update-booking-date', async (req, res) => {
-  const { employeeId, newDate } = req.body;
+  const { employeeId, newDate, newSession } = req.body;
 
-  if (!employeeId || !newDate) {
-    return res.status(400).json({ message: 'Employee ID dan tanggal baru wajib diisi!' });
+  if (!employeeId || !newDate || !newSession) {
+    return res.status(400).json({ message: 'Employee ID, tanggal, dan sesi harus wajib diisi!' });
   }
 
   try {
@@ -43,7 +43,7 @@ app.put('/api/update-booking-date', async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: 'Data booking tidak ditemukan!' });
     }
-
+    booking.session = newSession;
     booking.date = newDate;
     await booking.save();
 
