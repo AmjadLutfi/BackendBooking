@@ -30,6 +30,31 @@ const BookingSchema = new mongoose.Schema({
 const Booking = mongoose.model('Booking', BookingSchema);
 
 
+app.put('/api/update-booking-date', async (req, res) => {
+  const { employeeId, newDate } = req.body;
+
+  if (!employeeId || !newDate) {
+    return res.status(400).json({ message: 'Employee ID dan tanggal baru wajib diisi!' });
+  }
+
+  try {
+    const booking = await Booking.findOne({ employeeId });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Data booking tidak ditemukan!' });
+    }
+
+    booking.date = newDate;
+    await booking.save();
+
+    res.json({ message: 'Tanggal booking berhasil diperbarui!', updatedBooking: booking });
+  } catch (err) {
+    console.error("🔥 Error saat mengupdate booking:", err);
+    res.status(500).json({ message: 'Terjadi kesalahan saat memperbarui booking.' });
+  }
+});
+
+
 app.get('/api/check-booking', async (req, res) => {
   const { employeeId } = req.query;
 
